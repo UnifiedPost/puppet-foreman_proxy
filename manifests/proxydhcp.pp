@@ -1,5 +1,5 @@
 class foreman_proxy::proxydhcp {
-  include foreman_proxy::params
+  require foreman_proxy::params
 
   package { "net-ping":
     ensure   => installed,

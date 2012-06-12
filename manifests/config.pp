@@ -1,4 +1,7 @@
 class foreman_proxy::config {
+
+  require foreman_proxy::params
+
   user { $foreman_proxy::params::user:
     ensure  => 'present',
     shell   => '/sbin/nologin',
@@ -8,7 +11,7 @@ class foreman_proxy::config {
     require => Class['foreman_proxy::install'],
     notify  => Class['foreman_proxy::service'],
   }
- 
+
   file{'/etc/foreman-proxy/settings.yml':
     content => template('foreman_proxy/settings.yml.erb'),
     owner   => $foreman_proxy::params::user,
@@ -23,8 +26,8 @@ class foreman_proxy::config {
     changes => [
       "set spec[user = '${foreman_proxy::params::user}']/user ${foreman_proxy::params::user}",
       "set spec[user = '${foreman_proxy::params::user}']/host_group/host ALL",
-      "set spec[user = '${foreman_proxy::params::user}']/host_group/command[1] ${foreman_proxy::params::puppetca_cmd}",
-      "set spec[user = '${foreman_proxy::params::user}']/host_group/command[2] ${foreman_proxy::params::puppetrun_cmd}",
+      "set spec[user = '${foreman_proxy::params::user}']/host_group/command[1] ${foreman_proxy::params::puppetca_cmd}*",
+      "set spec[user = '${foreman_proxy::params::user}']/host_group/command[2] ${foreman_proxy::params::puppetrun_cmd}*",
       "set spec[user = '${foreman_proxy::params::user}']/host_group/command[1]/tag NOPASSWD",
       "set Defaults[type = ':${foreman_proxy::params::user}']/type :${foreman_proxy::params::user}",
       "set Defaults[type = ':${foreman_proxy::params::user}']/requiretty/negate ''",

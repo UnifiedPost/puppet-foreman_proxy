@@ -18,7 +18,7 @@
 :daemon_pid: /var/run/foreman-proxy/foreman-proxy.pid
 
 # port used by the proxy
-:port: 8443
+:port: <%= scope.lookupvar("foreman_proxy::params::port") %>
 
 # Enable TFTP management
 :tftp: <%= scope.lookupvar("foreman_proxy::params::tftp") %>
@@ -29,16 +29,16 @@
 
 # Enable DNS management
 :dns: <%= scope.lookupvar("foreman_proxy::params::dns") %>
-:dns_key: <%= scope.lookupvar("foreman_proxy::params::keyfile") %>
+:dns_key: <%= scope.lookupvar("foreman_proxy::params::dnskeyfile") %>
 # use this setting if you are managing a dns server which is not localhost though this proxy
 #:dns_server: dns.domain.com
 
 # Enable DHCP management
 :dhcp: <%= scope.lookupvar("foreman_proxy::params::dhcp") %>
 <% if scope.lookupvar("foreman_proxy::params::dhcp") == true -%>
-:dhcp_vendor: <%= scope.lookupvar("foreman_proxy::params::dhcp_vendor") %>
-:dhcp_config: <%= scope.lookupvar("foreman_proxy::params::dhcp_config") %>
-:dhcp_leases: <%= scope.lookupvar("foreman_proxy::params::dhcp_leases") %>
+:dhcp_vendor: <%= scope.lookupvar("foreman_proxy::params::dhcpvendor") %>
+:dhcp_config: <%= scope.lookupvar("foreman_proxy::params::dhcpconfig") %>
+:dhcp_leases: <%= scope.lookupvar("foreman_proxy::params::dhcpleases") %>
 <% else -%>
 # The vendor can be either isc or native_ms
 :dhcp_vendor: isc
@@ -68,3 +68,6 @@
 # valid options are
 # WARN, DEBUG, Error, Fatal, INFO, UNKNOWN
 #:log_level: DEBUG
+
+# PJG : undocumented but required: http://theforeman.org/issues/1104
+ssldir: <%= scope.lookupvar("foreman_proxy::params::puppetssldir") %>

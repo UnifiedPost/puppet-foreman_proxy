@@ -1,8 +1,6 @@
 class foreman_proxy::install {
-  include foreman::params
-  include foreman::install::repos
+  require foreman::params
   package {'foreman-proxy':
     ensure  => present,
-    require => Class['foreman::install::repos'],
   }
 }

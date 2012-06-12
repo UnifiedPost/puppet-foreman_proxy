@@ -1,5 +1,5 @@
 class foreman_proxy::proxydns {
-  include foreman_proxy::params
+  require foreman_proxy::params
   include dns
 
   dns::zone { "${::domain}":

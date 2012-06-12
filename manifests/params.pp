@@ -1,69 +1,80 @@
-class foreman_proxy::params {
+class foreman_proxy::params (
+  $dir               = '/usr/share/foreman-proxy',
+  $user              = 'foreman-proxy',
+  $log               = '/var/log/foreman-proxy/proxy.log',
+  $puppetca          = true,
+  $autosign_location = '/etc/puppet/autosign.conf',
+  $puppetca_cmd      = '/usr/sbin/puppet cert',
+  $puppet_group      = 'puppet',
+  $puppetrun         = true,
+  $puppetrun_cmd     = '/usr/sbin/puppetrun',
+  $tftp              = true,
+  $syslinux_root     = undef,
+  $syslinux_files    = ['pxelinux.0', 'menu.c32', 'chain.c32'],
+  $servername        = $ipaddress_eth0,
+  $port              = 8443,
+  $dhcp              = false,
+  $gateway           = '192.168.100.1',
+  $range             = '192.168.100.50 192.168.100.200',
+  $dhcp_vendor       = undef,
+  $dhcp_config       = undef,
+  $dhcp_leases       = undef,
+  $dns               = false,
+  $keyfile           = undef,
+  $puppetssldir      = '/var/lib/puppet-server/ssl'
+) {
 
-  include tftp::params
-
-  # variables
-  $dir  = '/usr/share/foreman-proxy'
-  $user = 'foreman-proxy'
-  $log  = '/var/log/foreman-proxy/proxy.log'
-
-  # puppetca settings
-  $puppetca          = true
-  $autosign_location = '/etc/puppet/autosign.conf'
-  $puppetca_cmd      = '/usr/sbin/puppet cert'
-  $puppet_group      = 'puppet'
-
-  # puppetrun settings
-  $puppetrun     = true
-  $puppetrun_cmd = '/usr/sbin/puppetrun'
-
+  if $tftp {
   # TFTP settings - requires optional TFTP puppet module
-  $tftp           = true
-  case $::operatingsystem {
-    Debian,Ubuntu: {
-      $syslinux_root  = '/usr/lib/syslinux'
-      $syslinux_files = ['pxelinux.0','menu.c32','chain.c32']
-    }
-    default: {
-      $syslinux_root  = '/usr/share/syslinux'
-      $syslinux_files = ['pxelinux.0','menu.c32','chain.c32']
-    }
+    require tftp::params
+    $tftproot       = $tftp::params::root
+    $tftp_dir       = ["${tftproot}/pxelinux.cfg","${tftproot}/boot"]
   }
-  $tftproot       = $tftp::params::root
-  $tftp_dir       = ["${tftproot}/pxelinux.cfg","${tftproot}/boot"]
-  $servername     = $ipaddress_eth0
+
+  $syslinux_path = $syslinux_root ? {
+    undef   => $::operatingsystem ? {
+      /(?i:debian|ubuntu)/ => '/usr/lib/syslinux',
+      default              => '/usr/share/syslinux',
+    },
+    default => $syslinux_root,
+  }
 
   # DHCP settings - requires optional DHCP puppet module
-  $dhcp = false
-  $gateway = '192.168.100.1'
-  $range   = '192.168.100.50 192.168.100.200'
-  case $::operatingsystem {
-    Debian: {
-      $dhcp_vendor = 'isc'
-      $dhcp_config = '/etc/dhcp/dhcpd.conf'
-      $dhcp_leases = '/var/lib/dhcp/dhcpd.leases'
-    }
-    Ubuntu: {
-      $dhcp_vendor = 'isc'
-      $dhcp_config = '/etc/dhcp3/dhcpd.conf'
-      $dhcp_leases = '/var/lib/dhcp3/dhcpd.leases'
-    }
-    default: {
-      $dhcp_vendor = 'isc'
-      $dhcp_config = '/etc/dhcpd.conf'
-      $dhcp_leases = '/var/lib/dhcpd/dhcpd.leases'
-    }
+  $dhcpvendor = $dhcp_vendor ? {
+    undef   => $::operatingsystem ? {
+      /(?i:debian)/ => 'isc',
+      /(?i:ubuntu)/ => 'isc',
+      default       => 'isc',
+    },
+    default => $dhcp_vendor,
   }
- 
+
+  $dhcpconfig = $dhcp_config ? {
+    undef   => $::operatingsystem ? {
+      /(?i:debian)/ => '/etc/dhcp/dhcpd.conf',
+      /(?i:ubuntu)/ => '/etc/dhcp3/dhcpd.conf',
+      default       => '/etc/dhcpd.conf',
+    },
+    default => $dhcp_config,
+  }
+
+  $dhcpleases= $dhcp_leases ? {
+    undef   => $::operatingsystem ? {
+      /(?i:debian)/ => '/var/lib/dhcp/dhcpd.leases',
+      /(?i:ubuntu)/ => '/var/lib/dhcp3/dhcpd.leases',
+      default       => '/var/lib/dhcpd/dhcpd.leases',
+    },
+    default => $dhcp_leases,
+  }
+
+
   # DNS settings - requires optional DNS puppet module
-  $dns  = false
-  case $::operatingsystem {
-    Debian: {
-      $keyfile = '/etc/bind/rndc.key'
-    }
-    default: {
-      $keyfile = '/etc/rndc.key'
-    }
+  $dnskeyfile = $keyfile ? {
+    undef   => $::operatingsystem ? {
+      /(?i:debian)/ => '/etc/bind/rndc.key',
+      default       => '/etc/rndc.key',
+    },
+    default => $keyfile,
   }
 
 }
