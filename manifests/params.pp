@@ -92,11 +92,11 @@ class foreman_proxy::params {
   $dns_server    = '127.0.0.1'
   case $::operatingsystem {
     Debian,Ubuntu: {
-      $keyfile = '/etc/bind/rndc.key'
+      $dns_keyfile = '/etc/bind/rndc.key'
       $nsupdate = 'dnsutils'
     }
     default: {
-      $keyfile = '/etc/rndc.key'
+      $dns_keyfile = '/etc/rndc.key'
       $nsupdate = 'bind-utils'
     }
   }
