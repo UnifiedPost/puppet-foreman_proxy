@@ -1,3 +1,117 @@
+# == Class: foreman_proxy
+#
+# Installs and configures the foreman smart-proxy.
+#
+#
+# === Parameters:
+#
+# $repo::                 Use a custom repo. This actually uses
+#                         foreman::install::repos and defaults to 'stable'.
+#
+# $port::                 Port used by the proxy. Defaults to +8443+.
+#
+# $dir::                  Override the directory where foreman-proxy was
+#                         installed to. Defaults to '/usr/share/foreman-proxy'.
+#
+# $user::                 User to run foreman-proxy as.
+#                         Defaults to 'foreman-proxy'.
+#
+# $log::                  Path to file where foreman-proxy will output his logs
+#                         to. Defaults to `/var/log/foreman-proxy/proxy.log`.
+#
+# $use_sudoersd::         Flag to indicate the sudoers rules should be created
+#                         in /etc/sudoers.d/ folder. The default value depends
+#                         on the operatingsystem and version in use.
+#                         (Currently defaults to +true+ on all operatingsystems
+#                         except CentOS 5.)
+#
+# $puppetca::             Enable Puppet CA management. Defaults to +true+.
+#
+# $autosign_location::    Location of puppet's autosign.conf file.
+#                         Defaults to '/etc/puppet/autosign.conf'.
+#
+# $puppetca_cmd::         Command to manage puppet ca. Defaults to puppet
+#                         version specific.
+#
+# $puppet_group::         Group puppet is running as. Defaults to '+puppet+'.
+#
+# $puppetrun::            Enables puppet management. Defaults to '+true+'.
+#
+# $puppetrun_cmd::        The command that is used for the puppet runs.
+#                         Defaults to '/usr/sbin/puppetrun'.
+#
+# $tftp::                 Enables tftp management. Defaults to '+true+'.
+#
+# $tftp_syslinux_root::   Defaults to distro specific: ('/usr/lib/syslinux' for
+#                         debian flavors, '/usr/share/syslinux' for anything
+#                         else).
+#
+# $tftp_syslinux_files::  Defaults to ['pxelinux.0','menu.c32','chain.c32'].
+#
+# $tftp_root::            Defaults to the value of tftp::params::root.
+#
+# $tftp_dirs::            Defaults to 'pxelinux.cfg' and 'boot' in the
+#                         'tftp_root' folder.
+#
+# $tftp_servername::      Defaults to the ipaddress of the '+eth0+' interface.
+#
+# $dhcp::                 Enable dhcp management. Defaults to '+false+'.
+#
+# $dhcp_interface::       Interface to enable dhcpd on. Defaults to '+eth0+'.
+#
+# $dhcp_gateway::         Gateway to use for the pool created by foreman.
+#                         Defaults to '192.168.100.1'.
+#
+# $dhcp_range::           Range to use for the pool.
+#                         Defaults to '192.168.100.50 192.168.100.200'.
+#
+# $dhcp_nameservers::     The nameservers to advertise. If set to 'default',
+#                         it will be translated into the ip of the
+#                         dhcp_interface that was selected.
+#
+# $dhcp_vendor::          The vendor of the dhcpd server. Can be either isc or
+#                         native_ms. Defaults to isc.
+#
+# $dhcp_config::          Location of the config file of the dhcp daemon.
+#                         Defaults to distro specific.
+#
+# $dhcp_leases::          Location of the leases file of the dhcp daemon.
+#                         Defaults to distro specific.
+#
+# $dns::                  Enabled dns management. Defaults to '+false+'.
+#
+# $dns_interface::        Network interfaces to listen on. Used to determine
+#                         the IP to bind to. Defaults to '+eth0+'.
+#
+# $dns_reverse::          Reverse lookup zone.
+#                         Defaults to '100.168.192.in-addr.arpa'
+#
+# $dns_server::           IP of the dns server to manage.
+#                         Defaults to '127.0.0.1'.
+#
+# $dns_forwarders::       DNS forwarders to use.
+#                         Defaults to an empty array (no forwarders).
+#
+# $dns_keyfile::          Location of the rndc keyfile to manage.
+#                         Defaults to distro specific.
+#
+#
+# === Requirements:
+#
+# * Puppet modules:
+#   * ::puppet
+#   * ::foreman
+#
+# * Augeas: Only required when +use_sudoersd+ is false.
+#
+# Depending on what features you have enabled, the following puppet
+# modules might be required:
+#
+# * ::tftp
+# * ::dhcp
+# * ::dns
+#
+#
 class foreman_proxy (
   $repo                = $foreman_proxy::params::repo,
   $port                = $foreman_proxy::params::port,
