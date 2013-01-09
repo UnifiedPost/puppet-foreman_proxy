@@ -1,4 +1,4 @@
-class foreman_proxy::config {
+class foreman_proxy::config inherits foreman_proxy {
 
   if $foreman_proxy::puppetca  { include foreman_proxy::puppetca }
   if $foreman_proxy::tftp      { include foreman_proxy::tftp }
@@ -13,6 +13,41 @@ class foreman_proxy::config {
   } else {
     $groups = [$foreman_proxy::puppet_group]
   }
+
+  if $foreman_proxy::ssl {
+    ## If we are going to use puppet::server. Make sure we have proper dependencies.
+    if defined(Class['puppet::server']) and (
+      ($foreman_proxy::ssl_cert == undef) or
+      ($foreman_proxy::ssl_ca_cert == undef) or
+      ($foreman_proxy::ssl_cert_key == undef)
+    ) {
+      Class['foreman_proxy::service'] {
+        require => Class['puppet::server::config'],
+      }
+    }
+    $ssl_certificate = $foreman_proxy::ssl_cert ? {
+      undef   => $puppet::server::ssl_cert,
+      default => $foreman_proxy::ssl_cert,
+    }
+
+    $ssl_ca_file = $foreman_proxy::ssl_ca_cert ? {
+      undef   => $puppet::server::ssl_ca_cert,
+      default => $foreman_proxy::ssl_ca_cert,
+    }
+
+    $ssl_private_key = $foreman_proxy::ssl_cert_key ? {
+      undef   => $puppet::server::ssl_cert_key,
+      default => $foreman_proxy::ssl_cert_key,
+    }
+
+    if ($ssl_certificate == undef)
+        or ($ssl_ca_file == undef)
+        or ($ssl_private_key == undef) {
+      fail ('I need certificates Bro')
+    }
+
+  }
+
 
   user { $foreman_proxy::user:
     ensure  => 'present',

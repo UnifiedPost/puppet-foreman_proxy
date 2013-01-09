@@ -11,6 +11,7 @@ class foreman_proxy::params {
   $dir  = '/usr/share/foreman-proxy'
   $user = 'foreman-proxy'
   $log  = '/var/log/foreman-proxy/proxy.log'
+  $ssl  = false
 
   # Should we assume a sudoers.d dir exists ( 'false' will use augeas instead )
   case $::operatingsystem {

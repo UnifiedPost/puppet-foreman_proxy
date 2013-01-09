@@ -19,6 +19,24 @@
 # $log::                  Path to file where foreman-proxy will output his logs
 #                         to. Defaults to `/var/log/foreman-proxy/proxy.log`.
 #
+# $ssl::                  Should we enable ssl or not. If enabled, we will
+#                         either use the certificates provided by puppet or
+#                         whatever configured in the ssl_* parameters.
+#                         Defaults to false.
+#
+# $ssl_ca_cert::          CA certificate. If left empty and puppet::server is
+#                         running on the same hosts, those certificates will
+#                         be used. Otherwise it must be specified or config
+#                         will fail.
+#
+# $ssl_cert::             SSL Certificate. If left empty... (see above)
+#
+# $ssl_cert_key::         Private SSL key. If left empty... (see above)
+#
+# $trusted_hosts::        Allowed hosts. Defaults to the fqdn of this host.
+#                         If explicitly set to undef, every verified SSL
+#                         connection will be allowed.
+#
 # $use_sudoersd::         Flag to indicate the sudoers rules should be created
 #                         in /etc/sudoers.d/ folder. The default value depends
 #                         on the operatingsystem and version in use.
@@ -118,6 +136,11 @@ class foreman_proxy (
   $dir                 = $foreman_proxy::params::dir,
   $user                = $foreman_proxy::params::user,
   $log                 = $foreman_proxy::params::log,
+  $ssl                 = $foreman_proxy::params::ssl,
+  $ssl_ca_cert         = undef,
+  $ssl_cert            = undef,
+  $ssl_cert_key        = undef,
+  $trusted_hosts       = [ $::fqdn ],
   $use_sudoersd        = $foreman_proxy::params::use_sudoersd,
   $puppetca            = $foreman_proxy::params::puppetca,
   $autosign_location   = $foreman_proxy::params::autosign_location,
