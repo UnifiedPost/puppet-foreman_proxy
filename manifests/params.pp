@@ -1,6 +1,4 @@
 class foreman_proxy::params {
-
-  include tftp::params
   include puppet::params
 
   # Packaging
@@ -48,7 +46,8 @@ class foreman_proxy::params {
     }
   }
   $tftp_syslinux_files = ['pxelinux.0','menu.c32','chain.c32']
-  $tftp_root           = $tftp::params::root
+  # Lazy loading of the param is done inside the tftp class
+  $tftp_root           = undef
   $tftp_dirs           = ["${tftp_root}/pxelinux.cfg","${tftp_root}/boot"]
   $tftp_servername     = $ipaddress_eth0
 
