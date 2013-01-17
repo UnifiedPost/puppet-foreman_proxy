@@ -23,7 +23,7 @@ class foreman_proxy::tftp {
 
   foreman_proxy::tftp::sync_file{$foreman_proxy::tftp_syslinux_files:
     source_path => $foreman_proxy::tftp_syslinux_root,
-    target_path => $target_path,,
+    target_path => $target_path,
     require     => Class['tftp::install'];
   }
 
