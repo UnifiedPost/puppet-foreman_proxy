@@ -1,10 +1,12 @@
 class foreman_proxy::install {
-  foreman::install::repos { 'foreman_proxy':
-    repo    => $foreman_proxy::repo,
+  if $foreman_proxy::repo {
+    foreman::install::repos { 'foreman_proxy':
+      repo   => $foreman_proxy::repo,
+      before => Package['foreman-proxy'],
+    }
   }
 
   package {'foreman-proxy':
     ensure  => present,
-    require => Foreman::Install::Repos['foreman_proxy'],
   }
 }
