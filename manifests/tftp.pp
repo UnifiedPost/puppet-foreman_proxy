@@ -27,7 +27,9 @@ class foreman_proxy::tftp {
     require     => Class['tftp::install'];
   }
 
-  package { 'wget':
-    ensure => installed,
+  if ! defined(Package['wget']) {
+    package { 'wget':
+      ensure => installed,
+    }
   }
 }
