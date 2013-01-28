@@ -1,13 +1,19 @@
-class foreman_proxy::proxydns {
-  class { dns:
-    forwarders => $foreman_proxy::dns_forwarders,
+class foreman_proxy::proxydns (
+  $dns_interface  = $::foreman_proxy::dns_interface,
+  $dns_forwarders = $::foreman_proxy::dns_forwarders,
+  $dns_reverse    = $::foreman_proxy::dns_reverse
+) inherits foreman_proxy {
+
+  class { 'dns':
+    forwarders => $dns_forwarders,
   }
 
   package { $foreman_proxy::params::nsupdate:
     ensure => installed,
   }
 
-  $ip_temp = "::ipaddress_${foreman_proxy::dns_interface}"
+  # This will look up the fact ::ipaddress_<INTERFACE> to determine the ip.
+  $ip_temp = "::ipaddress_${dns_interface}"
   $ip      = inline_template('<%= scope.lookupvar(ip_temp) %>')
 
   dns::zone { $::domain:
@@ -16,7 +22,7 @@ class foreman_proxy::proxydns {
     soaip   => $ip,
   }
 
-  dns::zone { $foreman_proxy::dns_reverse:
+  dns::zone { $dns_reverse:
     soa     => $::fqdn,
     reverse => true,
     soaip   => $ip,

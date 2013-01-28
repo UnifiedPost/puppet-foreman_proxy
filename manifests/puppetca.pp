@@ -1,9 +1,13 @@
-class foreman_proxy::puppetca {
+class foreman_proxy::puppetca (
+  $autosign_location = $::foreman_proxy::autosign_location,
+  $user              = $::foreman_proxy::user,
+  $puppet_group      = $::foreman_proxy::puppet_group
+) inherits foreman_proxy {
 
-  file { $foreman_proxy::autosign_location:
+  file { $autosign_location:
     ensure  => present,
-    owner   => $foreman_proxy::user,
-    group   => $foreman_proxy::puppet_group,
+    owner   => $user,
+    group   => $puppet_group,
     mode    => '0664',
     require => Class['foreman_proxy::install'],
   }
