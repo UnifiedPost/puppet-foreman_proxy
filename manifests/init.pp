@@ -113,6 +113,9 @@
 # $dns_keyfile::          Location of the rndc keyfile to manage.
 #                         Defaults to distro specific.
 #
+# $dns_nsupdate::         Override the package to install which contains
+#                         the tools that normally ship with bind.
+#
 #
 # === Requirements:
 #
@@ -168,6 +171,7 @@ class foreman_proxy (
   $dns_server          = $foreman_proxy::params::dns_server,
   $dns_forwarders      = $foreman_proxy::params::dns_forwarders,
   $dns_keyfile         = $foreman_proxy::params::dns_keyfile,
+  $dns_nsupdate        = $foreman_proxy::params::nsupdate,
 ) inherits foreman_proxy::params {
   class { 'foreman_proxy::install': } ~>
   class { 'foreman_proxy::config': } ~>
