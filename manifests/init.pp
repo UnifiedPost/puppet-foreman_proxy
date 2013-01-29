@@ -33,6 +33,11 @@
 #
 # $ssl_cert_key::         Private SSL key. If left empty... (see above)
 #
+# $ssl_dir::              The directory which contains the puppet ca
+#                         certificates. If left empty and puppet::server is
+#                         configured on the same host, the value specified
+#                         there will be used.
+#
 # $trusted_hosts::        Allowed hosts. Defaults to the fqdn of this host.
 #                         If explicitly set to undef, every verified SSL
 #                         connection will be allowed.
@@ -143,6 +148,7 @@ class foreman_proxy (
   $ssl_ca_cert         = undef,
   $ssl_cert            = undef,
   $ssl_cert_key        = undef,
+  $ssl_dir             = undef,
   $trusted_hosts       = [ $::fqdn ],
   $use_sudoersd        = $foreman_proxy::params::use_sudoersd,
   $puppetca            = $foreman_proxy::params::puppetca,

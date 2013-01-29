@@ -34,7 +34,8 @@ class foreman_proxy::config (
     if defined(Class['::puppet::server']) and (
       ($ssl_cert == undef) or
       ($ssl_ca_cert == undef) or
-      ($ssl_cert_key == undef)
+      ($ssl_cert_key == undef) or
+      ($ssl_dir == undef)
     ) {
       Class['::foreman_proxy::service'] {
         require => Class['::puppet::server::config'],
@@ -53,6 +54,11 @@ class foreman_proxy::config (
     $ssl_private_key = $ssl_cert_key ? {
       undef   => $::puppet::server::ssl_cert_key,
       default => $ssl_cert_key,
+    }
+
+    $ssl_dir = $ssl_dir ? {
+      undef   => $::puppet::server:ssl_dir,
+      default => $ssl_dir,
     }
 
     if ($ssl_certificate == undef)
