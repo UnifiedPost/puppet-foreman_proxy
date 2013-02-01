@@ -10,8 +10,8 @@
 # NOTE that both certificates need to be signed by the same CA in order for this to work
 # see http://theforeman.org/projects/smart-proxy/wiki/SSL for more information
 <% if @ssl and @ssl != :undef -%>
-<% if @ssl_dir and @ssl_dir != :undef -%>
-:ssldir: <%= @ssl_dir %>
+<% if @ssldir and @ssldir != :undef -%>
+:ssldir: <%= @ssldir %>
 <% end -%>
 :ssl_certificate: <%= @ssl_certificate %>
 :ssl_ca_file:  <%= @ssl_ca_file %>

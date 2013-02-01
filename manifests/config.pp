@@ -95,7 +95,7 @@ class foreman_proxy::config (
       default => $ssl_cert_key,
     }
 
-    $ssl_dir = $ssl_dir ? {
+    $ssldir = $ssl_dir ? {
       undef   => $::puppet::server::ssl_dir,
       default => $ssl_dir,
     }
