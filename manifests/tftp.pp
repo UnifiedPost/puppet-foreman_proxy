@@ -1,10 +1,10 @@
 class foreman_proxy::tftp (
-  $tftp_root           = $::foreman_proxy::tftp_root,
-  $tftp_dirs           = $::foreman_proxy::tftp_dirs,
-  $tftp_syslinux_files = $::foreman_proxy::tftp_syslinux_files,
-  $tftp_syslinux_root  = $::foreman_proxy::tftp_syslinux_root,
-  $user                = $::foreman_proxy::user,
-) inherits foreman_proxy {
+  $tftp_root           = $::foreman_proxy::config::tftp_root,
+  $tftp_dirs           = $::foreman_proxy::config::tftp_dirs,
+  $tftp_syslinux_files = $::foreman_proxy::config::tftp_syslinux_files,
+  $tftp_syslinux_root  = $::foreman_proxy::config::tftp_syslinux_root,
+  $user                = $::foreman_proxy::config::user,
+) inherits foreman_proxy::config {
   require ::tftp
 
   ## Lazy set default tftp_root when nothing is defined.

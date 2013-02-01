@@ -1,18 +1,57 @@
+# == Class: foreman_proxy::config
+#
+# Configures foreman_proxy and calls serveral subclasses to configure
+# certain services this proxy manages.
+#
+# === Parameters:
+#
+# See ::foreman_proxy for a description of the parameters
+#
+#
 class foreman_proxy::config (
-  $puppetca      = $::foreman_proxy::puppetca,
-  $tftp          = $::foreman_proxy::tftp,
-  $dhcp          = $::foreman_proxy::dhcpd,
-  $dns           = $::foreman_proxy::dns,
-  $ssl           = $::foreman_proxy::ssl,
-  $ssl_cert      = $::foreman_proxy::ssl_cert,
-  $ssl_ca_cert   = $::foreman_proxy::ssl_ca_cert,
-  $ssl_cert_key  = $::foreman_proxy::ssl_cert_key,
-  $ssl_dir       = $::foreman_proxy::ssl_dir,
-  $user          = $::foreman_proxy::user,
-  $dir           = $::foreman_proxy::dir,
-  $use_sudoersd  = $::foreman_proxy::use_sudoersd,
-  $puppetca_cmd  = $::foreman_proxy::puppetca_cmd,
-  $puppetrun_cmd = $::foreman_proxy::puppetrun_cmd,
+  $port                = $::foreman_proxy::port,
+  $dir                 = $::foreman_proxy::dir,
+  $user                = $::foreman_proxy::user,
+  $log                 = $::foreman_proxy::log,
+
+  $ssl                 = $::foreman_proxy::ssl,
+  $ssl_cert            = $::foreman_proxy::ssl_cert,
+  $ssl_ca_cert         = $::foreman_proxy::ssl_ca_cert,
+  $ssl_cert_key        = $::foreman_proxy::ssl_cert_key,
+  $ssl_dir             = $::foreman_proxy::ssl_dir,
+  $trusted_hosts       = $::foreman_proxy::trusted_hosts,
+
+  $use_sudoersd        = $::foreman_proxy::use_sudoersd,
+  $puppetca            = $::foreman_proxy::puppetca,
+  $puppetca_cmd        = $::foreman_proxy::puppetca_cmd,
+  $puppet_group        = $::foreman_proxy::puppet_group,
+  $puppetrun           = $::foreman_proxy::puppetrun,
+  $puppetrun_cmd       = $::foreman_proxy::puppetrun_cmd,
+  $autosign_location   = $::foreman_proxy::autosign_location,
+
+  $tftp                = $::foreman_proxy::tftp,
+  $tftp_syslinux_root  = $::foreman_proxy::tftp_syslinux_root,
+  $tftp_syslinux_files = $::foreman_proxy::tftp_syslinux_files,
+  $tftp_root           = $::foreman_proxy::tftp_root,
+  $tftp_dirs           = $::foreman_proxy::tftp_dirs,
+  $tftp_servername     = $::foreman_proxy::tftp_servername,
+
+  $dhcp                = $::foreman_proxy::dhcpd,
+  $dhcp_interface      = $::foreman_proxy::dhcp_interface,
+  $dhcp_gateway        = $::foreman_proxy::dhcp_gateway,
+  $dhcp_range          = $::foreman_proxy::dhcp_range,
+  $dhcp_nameservers    = $::foreman_proxy::dhcp_nameservers,
+  $dhcp_vendor         = $::foreman_proxy::dhcp_vendor,
+  $dhcp_config         = $::foreman_proxy::dhcp_config,
+  $dhcp_leases         = $::foreman_proxy::dhcp_leases,
+
+  $dns                 = $::foreman_proxy::dns,
+  $dns_interface       = $::foreman_proxy::dns_interface,
+  $dns_reverse         = $::foreman_proxy::dns_reverse,
+  $dns_server          = $::foreman_proxy::dns_server,
+  $dns_forwarders      = $::foreman_proxy::dns_forwarders,
+  $dns_keyfile         = $::foreman_proxy::dns_keyfile,
+  $dns_nsupdate        = $::foreman_proxy::dns_nsupdate
 ) inherits foreman_proxy {
 
   if $puppetca  { include ::foreman_proxy::puppetca }
@@ -23,10 +62,10 @@ class foreman_proxy::config (
 
   if $dns {
     include ::foreman_proxy::proxydns
-    include ::dns::params
-    $groups = [$::dns::params::group,$::foreman_proxy::puppet_group]
+    require ::dns::params
+    $groups = [$::dns::params::group,$puppet_group]
   } else {
-    $groups = [$::foreman_proxy::puppet_group]
+    $groups = [$puppet_group]
   }
 
   if $ssl {
@@ -57,7 +96,7 @@ class foreman_proxy::config (
     }
 
     $ssl_dir = $ssl_dir ? {
-      undef   => $::puppet::server:ssl_dir,
+      undef   => $::puppet::server::ssl_dir,
       default => $ssl_dir,
     }
 

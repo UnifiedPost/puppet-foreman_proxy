@@ -1,8 +1,8 @@
 class foreman_proxy::puppetca (
-  $autosign_location = $::foreman_proxy::autosign_location,
-  $user              = $::foreman_proxy::user,
-  $puppet_group      = $::foreman_proxy::puppet_group
-) inherits foreman_proxy {
+  $autosign_location = $::foreman_proxy::config::autosign_location,
+  $user              = $::foreman_proxy::config::user,
+  $puppet_group      = $::foreman_proxy::config::puppet_group
+) inherits foreman_proxy::config {
 
   file { $autosign_location:
     ensure  => present,

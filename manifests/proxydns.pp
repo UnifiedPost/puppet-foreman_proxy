@@ -1,9 +1,9 @@
 class foreman_proxy::proxydns (
-  $dns_interface  = $::foreman_proxy::dns_interface,
-  $dns_forwarders = $::foreman_proxy::dns_forwarders,
-  $dns_reverse    = $::foreman_proxy::dns_reverse,
-  $dns_nsupdate   = $::foreman_proxy::dns_nsupdate
-) inherits foreman_proxy {
+  $dns_interface  = $::foreman_proxy::config::dns_interface,
+  $dns_forwarders = $::foreman_proxy::config::dns_forwarders,
+  $dns_reverse    = $::foreman_proxy::config::dns_reverse,
+  $dns_nsupdate   = $::foreman_proxy::config::dns_nsupdate
+) inherits foreman_proxy::config {
 
   class { 'dns':
     forwarders => $dns_forwarders,

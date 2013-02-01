@@ -1,9 +1,9 @@
 class foreman_proxy::proxydhcp (
-  $dhcp_interface   = $::foreman_proxy::dhcp_interface,
-  $dhcp_nameservers = $::foreman_proxy::dhcp_nameservers,
-  $dhcp_range       = $::foreman_proxy::dhcp_range,
-  $dhcp_gateway     = $::foreman_proxy::dhcp_gateway
-) inherits foreman_proxy {
+  $dhcp_interface   = $::foreman_proxy::config::dhcp_interface,
+  $dhcp_nameservers = $::foreman_proxy::config::dhcp_nameservers,
+  $dhcp_range       = $::foreman_proxy::config::dhcp_range,
+  $dhcp_gateway     = $::foreman_proxy::config::dhcp_gateway
+) inherits foreman_proxy::config {
 
   $ip_temp   = "ipaddress_${dhcp_interface}"
   $ip        = inline_template('<%= scope.lookupvar(ip_temp) %>')
